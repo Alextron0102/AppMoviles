@@ -7,21 +7,7 @@ class MyApp extends StatelessWidget {
   //final wordPair = WordPair.random();
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Welcome to Flutter',
-      home: RandomWords()
-      
-      // Scaffold(
-      //   appBar: AppBar(
-      //     title: Text("Generador de palabras"),
-      //   ),
-      //   body: Center(
-      //       //child: ListView.builder(itemBuilder: (BuildContext context, int index){return Container(child: Center( child: RandomWords()));}),
-      //       //child: RandomWords(),
-      //       ),
-      // ),
-
-    );
+    return MaterialApp(title: 'Welcome to Flutter', home: RandomWords());
   }
 }
 
@@ -33,7 +19,7 @@ class RandomWords extends StatefulWidget {
 class RandomWordsState extends State<RandomWords> {
   final List<WordPair> suggestions = <WordPair>[];
   final TextStyle biggerFont = TextStyle(fontSize: 24);
-
+  final Set<WordPair> saved = Set<WordPair>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +27,14 @@ class RandomWordsState extends State<RandomWords> {
         title: Text('App Name Generator'),
       ),
       body: buildSuggestions(),
+
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.favorite),
+        onPressed: () {
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => SecondRoute()));
+        },
+      ),
+
     );
   }
 
@@ -60,11 +54,20 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget buildrow(WordPair pair) {
+    final bool alreadysaved = saved.contains(pair);
     return ListTile(
       title: Text(
         pair.asPascalCase,
+        //pair.asPascalCase,
         style: biggerFont,
       ),
+      trailing: Icon(alreadysaved ? Icons.favorite : Icons.favorite_border,
+          color: alreadysaved ? Colors.red[300] : null),
+      onTap: () {
+        setState(() {
+          alreadysaved ? saved.remove(pair) : saved.add(pair);
+        });
+      },
     );
   }
 }
